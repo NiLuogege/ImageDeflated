@@ -26,6 +26,25 @@ android {
 
 }
 
+imageDeflated {
+    tiny {
+        open = true
+        tinyKey = "aaaa"
+        threshold = 1024 * 5
+        whiteList = [
+                "aaa",
+                "bbb",
+        ]
+    }
+
+    webp {
+        open = false
+        whiteList = [
+                "ccc",
+        ]
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
