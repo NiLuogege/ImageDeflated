@@ -1,0 +1,20 @@
+apply plugin: 'groovy'
+
+dependencies {
+    implementation gradleApi()
+
+}
+
+//创建本地仓库 用于调试
+apply plugin: 'maven'
+group = 'com.niluogege.imageDeflated'
+version = '1.0.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //本地的Maven地址设置为D:/repos
+            repository(url: uri('../repo'))
+        }
+    }
+}
