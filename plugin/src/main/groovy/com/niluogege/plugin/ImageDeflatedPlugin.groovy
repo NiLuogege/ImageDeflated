@@ -77,6 +77,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
                 List<ResourceSet> resourceSets = (List<ResourceSet>) getConfiguredResourceSets.invoke(mergeResourcesTask, preprocessor);
 
                 for (ResourceSet resourceSet : resourceSets) {
+                    List<File> sourceFiles = resourceSet.getSourceFiles()
                     System.out.println("rs= " + resourceSet.toString());
                 }
 
