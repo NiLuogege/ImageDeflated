@@ -81,12 +81,17 @@ class ImageDeflatedPlugin implements Plugin<Project> {
                     System.out.println("rs= " + resourceSet.toString());
                 }
 
+                // 有时间的话 生成的png  也可以 进行压缩 generatedPngsOutputDir,还是算了！！
 //                Deflateder.deflate(outputDirPath, generatedPngsOutputDir, mergeResourcesTask)
             }
 
             mergeResourcesTask.doLast {
                 println("doLast")
             }
+
+
+            File publicFile = mergeResourcesTask.getPublicFile().isPresent() ? getPublicFile().get().getAsFile() : null;
+            println("publicFile=$publicFile")
         }
 
 
