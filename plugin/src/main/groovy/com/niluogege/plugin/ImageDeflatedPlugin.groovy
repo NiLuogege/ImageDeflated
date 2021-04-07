@@ -1,11 +1,17 @@
 package com.niluogege.plugin
 
+import com.android.build.gradle.tasks.MergeResources
+import com.android.ide.common.resources.ResourcePreprocessor
+import com.android.ide.common.resources.ResourceSet
 import com.niluogege.plugin.extension.ImageDeflatedExtension
 import com.niluogege.plugin.extension.TinyExtension
 import com.niluogege.plugin.extension.WebpExtension
 import com.niluogege.plugin.task.ImageDeflatedTask
+import com.niluogege.plugin.utils.ReflectUtil
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+
+import java.lang.reflect.Method
 
 
 class ImageDeflatedPlugin implements Plugin<Project> {
@@ -45,10 +51,43 @@ class ImageDeflatedPlugin implements Plugin<Project> {
         def taskName = "imageDeflate$variantName"
         if (project.tasks.findByName(taskName) == null) {
             def imageDeflatedTask = project.tasks.create(taskName, ImageDeflatedTask)
-            def mergeResourcesTask = variant.mergeResourcesProvider.get()
+            MergeResources mergeResourcesTask = variant.mergeResourcesProvider.get()
             mergeResourcesTask.dependsOn(imageDeflatedTask)
 
-            print("mergeResourcesTask=${mergeResourcesTask.getName()}")
+
+            String outputDirPath = mergeResourcesTask.getOutputDir().getAsFile().get().getAbsolutePath()
+            String generatedPngsOutputDir = mergeResourcesTask.getGeneratedPngsOutputDir().getAbsolutePath()
+
+            println("mergeResourcesTask=${mergeResourcesTask.getName()} \n" +
+                    "outputDir=${outputDirPath} \n" +
+                    "generatedPngsOutputDir=${generatedPngsOutputDir} \n" +
+                    "mergedNotCompiledResourcesOutputDirectory=${mergeResourcesTask.getMergedNotCompiledResourcesOutputDirectory().toString()} \n" +
+//                    "mergedNotCompiledResourcesOutputDirectory=${mergeResourcesTask.getMergedNotCompiledResourcesOutputDirectory().getAsFile().get().getAbsolutePath()} \n" +
+                    "")
+
+            mergeResourcesTask.doFirst {
+                println("doFirst")
+
+                Class clazz = mergeResourcesTask.getClass()
+
+                Method getPreprocessor = ReflectUtil.getDeclaredMethodRecursive(clazz, "getPreprocessor")
+                Method getConfiguredResourceSets = ReflectUtil.getDeclaredMethodRecursive(clazz, "getConfiguredResourceSets", ResourcePreprocessor.class)
+
+                ResourcePreprocessor preprocessor = (ResourcePreprocessor) getPreprocessor.invoke(mergeResourcesTask);
+                List<ResourceSet> resourceSets = (List<ResourceSet>) getConfiguredResourceSets.invoke(mergeResourcesTask, preprocessor);
+
+                for (ResourceSet resourceSet : resourceSets) {
+                    System.out.println("rs= " + resourceSet.toString());
+                }
+
+//                Deflateder.deflate(outputDirPath, generatedPngsOutputDir, mergeResourcesTask)
+            }
+
+            mergeResourcesTask.doLast {
+                println("doLast")
+            }
         }
+
+
     }
 }

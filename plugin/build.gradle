@@ -4,12 +4,16 @@ dependencies {
     implementation gradleApi()
     //tiny压缩 https://tinypng.com/developers/reference/java
     implementation 'com.tinify:tinify:1.6.4'
+    // commons-io
+    implementation 'commons-io:commons-io:2.8.0'
+    //
+    implementation 'com.android.tools.build:gradle:3.6.3'
 }
 
 //创建本地仓库 用于调试
 apply plugin: 'maven'
 group = 'com.niluogege.imageDeflated'
-version = '1.0.8'
+version = '1.0.24'
 
 uploadArchives {
     repositories {
