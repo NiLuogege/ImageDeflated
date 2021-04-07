@@ -20,14 +20,13 @@ class ImageDeflatedPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         project.extensions.create("imageDeflated", ImageDeflatedExtension)
-        project.extensions.add("tiny", TinyExtension)
-        project.extensions.add("webp", WebpExtension)
+        project.imageDeflated.extensions.create("tiny", TinyExtension)
+        project.imageDeflated.extensions.create("webp", WebpExtension)
 
         project.afterEvaluate {
 
             def android = project.extensions.android
             ImageDeflatedExtension imageDeflated = project.extensions.imageDeflated
-            ImageDeflatedExtension imageDeflated2 = project.imageDeflated
 
 
             android.applicationVariants.all { variant ->
@@ -38,8 +37,10 @@ class ImageDeflatedPlugin implements Plugin<Project> {
                 createTask(project, buildType)
             }
 
-            println("imageDeflated=${imageDeflated.toString()} tiny=${imageDeflated.tiny} open=${imageDeflated.tiny?.open} ")
-            println("imageDeflated2=${imageDeflated2.toString()} tiny=${imageDeflated2.tiny} open=${imageDeflated2.tiny?.open} ")
+            TinyExtension tiny = imageDeflated.tiny
+            WebpExtension webp = imageDeflated.webp
+            println("tiny  tinyKey=${tiny?.key} open=${tiny?.open} ")
+            println("webp  whiteList=${webp?.whiteList?.toString()} open=${webp?.open} ")
         }
 
 

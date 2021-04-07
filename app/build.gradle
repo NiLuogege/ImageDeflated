@@ -29,7 +29,7 @@ android {
 imageDeflated {
     tiny {
         open = true
-        tinyKey = "aaaa"
+        key = "aaaa"
         threshold = 1024 * 5
         whiteList = [
                 "aaa",

@@ -13,7 +13,7 @@ dependencies {
 //创建本地仓库 用于调试
 apply plugin: 'maven'
 group = 'com.niluogege.imageDeflated'
-version = '1.0.24'
+version = '1.0.31'
 
 uploadArchives {
     repositories {
