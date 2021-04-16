@@ -6,7 +6,6 @@ import com.tinify.Tinify;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.AbstractFileFilter;
-import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,29 +25,44 @@ public class Tinyer {
         this.waitDeflateDirs = waitDeflateDirs;
         this.tinyConfig = tinyConfig;
 
+        Tinify.setKey(tinyConfig.key);
     }
 
     public void tiny() throws Exception {
-        if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
-            for (File waitDeflateDir : waitDeflateDirs) {
+        if (tinyConfig.open) {
+            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
+                for (File waitDeflateDir : waitDeflateDirs) {
 
-                for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, TrueFileFilter.TRUE, new TargetDirFilter())) {
-
-
-                    System.out.println(file.getName());
-
-                    if (file.getName().endsWith(".png.flat")) {
-                        String filePath = file.getAbsolutePath();
+                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, new TargetFileFilter(), new TargetDirFilter())) {
 
 
-                        Source source = Tinify.fromFile(filePath);
-                        source.toFile(filePath.replace(".flat", ""));
+                        if (!file.isDirectory()) {
+
+                            System.out.println(file.getName());
+
+                            String filePath = file.getAbsolutePath();
+
+                            Source source = Tinify.fromFile(filePath);
+                            source.toFile(filePath.replace(".png", "-origin.png"));
+                        }
                     }
                 }
             }
         }
     }
 
+
+    private static class TargetFileFilter extends AbstractFileFilter {
+        @Override
+        public boolean accept(File file) {
+
+            String fileName = file.getName().toLowerCase();
+            if (!file.isDirectory() && (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))) {
+                return true;
+            }
+            return false;
+        }
+    }
 
     private static class TargetDirFilter extends AbstractFileFilter {
         @Override
