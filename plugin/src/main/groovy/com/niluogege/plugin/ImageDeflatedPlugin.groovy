@@ -3,6 +3,8 @@ package com.niluogege.plugin
 import com.android.build.gradle.tasks.MergeResources
 import com.android.ide.common.resources.ResourcePreprocessor
 import com.android.ide.common.resources.ResourceSet
+import com.niluogege.plugin.bean.TinyConfig
+import com.niluogege.plugin.bean.WebpConfig
 import com.niluogege.plugin.extension.ImageDeflatedExtension
 import com.niluogege.plugin.extension.TinyExtension
 import com.niluogege.plugin.extension.WebpExtension
@@ -20,6 +22,8 @@ import java.lang.reflect.Method
 class ImageDeflatedPlugin implements Plugin<Project> {
     static final cacheDirName = "imageDeflated"
     static Project project
+    static TinyConfig tinyConfig = new TinyConfig()
+    static WebpConfig webpConfig = new WebpConfig()
 
     @Override
     void apply(Project project) {
@@ -43,13 +47,33 @@ class ImageDeflatedPlugin implements Plugin<Project> {
                 createTask(project, buildType)
             }
 
-            TinyExtension tiny = imageDeflated.tiny
-            WebpExtension webp = imageDeflated.webp
-            println("tiny  tinyKey=${tiny?.key} open=${tiny?.open} ")
-            println("webp  whiteList=${webp?.whiteList?.toString()} open=${webp?.open} ")
+            extension2Config(imageDeflated)
+
         }
 
 
+    }
+
+    private static void extension2Config(ImageDeflatedExtension imageDeflated) {
+        TinyExtension tiny = imageDeflated.tiny
+        WebpExtension webp = imageDeflated.webp
+
+
+        if (tiny != null) {
+            tinyConfig.key = tiny.key
+            tinyConfig.compressionsCountPerMonth = tiny.compressionsCountPerMonth
+            tinyConfig.threshold = tiny.threshold
+            tinyConfig.open = tiny.open
+            tinyConfig.whiteList = tiny.whiteList
+        }
+
+        if (webp != null) {
+            webpConfig.open = webp.open
+            webpConfig.whiteList = webp.whiteList
+        }
+
+        println("tiny  tinyKey=${tiny?.key} open=${tiny?.open} ")
+        println("webp  whiteList=${webp?.whiteList?.toString()} open=${webp?.open} ")
     }
 
 
@@ -68,59 +92,53 @@ class ImageDeflatedPlugin implements Plugin<Project> {
     }
 
     private static void hookMergeResourcesTask(MergeResources mergeResourcesTask) {
-        String outputDirPath = mergeResourcesTask.getOutputDir().getAsFile().get().getAbsolutePath()
-        String generatedPngsOutputDir = mergeResourcesTask.getGeneratedPngsOutputDir().getAbsolutePath()
-
-        println("mergeResourcesTask=${mergeResourcesTask.getName()} \n" +
-                "outputDir=${outputDirPath} \n" +
-                "generatedPngsOutputDir=${generatedPngsOutputDir} \n" +
-                "mergedNotCompiledResourcesOutputDirectory=${mergeResourcesTask.getMergedNotCompiledResourcesOutputDirectory().toString()} \n" +
-//                    "mergedNotCompiledResourcesOutputDirectory=${mergeResourcesTask.getMergedNotCompiledResourcesOutputDirectory().getAsFile().get().getAbsolutePath()} \n" +
-                "")
-
         mergeResourcesTask.doFirst {
-            println("doFirst")
+            println("ImageDeflatedPlugin mergeResourcesTask doFirst")
 
             clearCacheDirRoot()
 
-            Class clazz = mergeResourcesTask.getClass()
+            List<ResourceSet> resourceSets = getResourceSets(mergeResourcesTask)
 
-            Method getPreprocessor = ReflectUtil.getDeclaredMethodRecursive(clazz, "getPreprocessor")
-            Method getConfiguredResourceSets = ReflectUtil.getDeclaredMethodRecursive(clazz, "getConfiguredResourceSets", ResourcePreprocessor.class)
+            List<File> waitDeflateDirs = changeSourceFile(resourceSets)
 
-            ResourcePreprocessor preprocessor = (ResourcePreprocessor) getPreprocessor.invoke(mergeResourcesTask);
-            List<ResourceSet> resourceSets = (List<ResourceSet>) getConfiguredResourceSets.invoke(mergeResourcesTask, preprocessor);
-
-            List<File> waitDeflateDirs = new ArrayList<>();
-
-            //将 resourceSets 中的res 文件路径 替换为 我们自己的
-            for (ResourceSet resourceSet : resourceSets) {
-                List<File> sourceFiles = resourceSet.getSourceFiles()
-                List<File> newSourceFiles = new ArrayList<>();
-                for (File file : sourceFiles) {
-                    if (file.exists()) {
-                        File resCacheDir = getCacheDir(resourceSet, file)
-                        newSourceFiles.add(resCacheDir)
-                        FileUtils.copyDirectory(file, resCacheDir)
-                    }
-                    sourceFiles.clear()
-                    sourceFiles.addAll(newSourceFiles)
-                    waitDeflateDirs.addAll(newSourceFiles)
-                }
-                System.out.println("rs= " + resourceSet.toString())
-            }
-
-
-            Deflateder.deflate(waitDeflateDirs)
+            Deflateder.deflate(waitDeflateDirs, tinyConfig, webpConfig)
         }
 
         mergeResourcesTask.doLast {
-            println("doLast")
+            println("ImageDeflatedPlugin mergeResourcesTask doLast")
         }
+    }
 
 
-        File publicFile = mergeResourcesTask.getPublicFile().isPresent() ? getPublicFile().get().getAsFile() : null;
-        println("publicFile=$publicFile")
+    private static List<ResourceSet> getResourceSets(MergeResources mergeResourcesTask) {
+        Class clazz = mergeResourcesTask.getClass()
+        Method getPreprocessor = ReflectUtil.getDeclaredMethodRecursive(clazz, "getPreprocessor")
+        Method getConfiguredResourceSets = ReflectUtil.getDeclaredMethodRecursive(clazz, "getConfiguredResourceSets", ResourcePreprocessor.class)
+        ResourcePreprocessor preprocessor = (ResourcePreprocessor) getPreprocessor.invoke(mergeResourcesTask);
+        List<ResourceSet> resourceSets = (List<ResourceSet>) getConfiguredResourceSets.invoke(mergeResourcesTask, preprocessor);
+        return resourceSets
+    }
+
+    private static List<File> changeSourceFile(List<ResourceSet> resourceSets) {
+        List<File> waitDeflateDirs = new ArrayList<>();
+
+        //将 resourceSets 中的res 文件路径 替换为 我们自己的
+        for (ResourceSet resourceSet : resourceSets) {
+            List<File> sourceFiles = resourceSet.getSourceFiles()
+            List<File> newSourceFiles = new ArrayList<>();
+            for (File file : sourceFiles) {
+                if (file.exists()) {
+                    File resCacheDir = getCacheDir(resourceSet, file)
+                    newSourceFiles.add(resCacheDir)
+                    FileUtils.copyDirectory(file, resCacheDir)
+                }
+                sourceFiles.clear()
+                sourceFiles.addAll(newSourceFiles)
+                waitDeflateDirs.addAll(newSourceFiles)
+            }
+            System.out.println("rs= " + resourceSet.toString())
+        }
+        return waitDeflateDirs
     }
 
     private static File getCacheDir(ResourceSet resourceSet, File file) {

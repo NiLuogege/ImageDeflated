@@ -4,6 +4,8 @@ import com.android.build.gradle.internal.LoggingUtil;
 import com.android.build.gradle.tasks.MergeResources;
 import com.android.ide.common.resources.ResourcePreprocessor;
 import com.android.ide.common.resources.ResourceSet;
+import com.niluogege.plugin.bean.TinyConfig;
+import com.niluogege.plugin.bean.WebpConfig;
 import com.tinify.Source;
 import com.tinify.Tinify;
 
@@ -17,50 +19,12 @@ import java.util.List;
 
 public class Deflateder {
 
-    private Deflateder() {
-    }
 
-    private static final class Inner {
-        private static final Deflateder instance = new Deflateder();
-    }
-
-    public static Deflateder getInstance() {
-
-        return Inner.instance;
-    }
-
-    private boolean isInit = false;
-
-    public Deflateder init() {
-        Tinify.setKey("Jd3rDN5x3R9QClQ1qS8zPNTqCw0dc48L");
-        isInit = true;
-        return this;
-    }
-
-    public void deflate(List<File> waitDeflateDirs) {
+    public static void deflate(List<File> waitDeflateDirs, TinyConfig tinyConfig, WebpConfig webpConfig) {
 
         try {
-
-
-            Class clazz = Class.forName("com.android.build.gradle.tasks.MergeResources_Decorated");
-//            Class clazz = mergeResources.getClass();
-
-
-
-            Method getPreprocessor = clazz.getDeclaredMethod("getPreprocessor");
-            getPreprocessor.setAccessible(true);
-
-            Method getConfiguredResourceSets = clazz.getDeclaredMethod("getConfiguredResourceSets", ResourcePreprocessor.class);
-            getConfiguredResourceSets.setAccessible(true);
-
-            ResourcePreprocessor preprocessor = (ResourcePreprocessor) getPreprocessor.invoke(mergeResources);
-            List<ResourceSet> resourceSets = (List<ResourceSet>) getConfiguredResourceSets.invoke(mergeResources, preprocessor);
-
-            for (ResourceSet resourceSet : resourceSets) {
-                System.out.println("rs= " + resourceSet.toString());
-            }
-
-
+            Tinyer tinyer = new Tinyer(waitDeflateDirs, tinyConfig);
+            tinyer.tiny();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,21 +32,4 @@ public class Deflateder {
     }
 
 
-    private void tiny() {
-//        File outputDir = new File(outputDirPath);
-//        if (outputDir.exists()) {
-//            for (File file : FileUtils.listFilesAndDirs(outputDir, TrueFileFilter.TRUE, TrueFileFilter.TRUE)) {
-//
-//                System.out.println(file.getName());
-//
-//                if (file.getName().endsWith(".png.flat")) {
-//                    String filePath = file.getAbsolutePath();
-//
-//
-//                    Source source = Tinify.fromFile(filePath);
-//                    source.toFile(filePath.replace(".flat",""));
-//                }
-//            }
-//        }
-    }
 }
