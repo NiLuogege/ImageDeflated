@@ -37,7 +37,7 @@ public class Deflateder {
         return this;
     }
 
-    public void deflate(String outputDirPath, String generatedPngsOutputDir, Object mergeResources) {
+    public void deflate(List<File> waitDeflateDirs) {
 
         try {
 

@@ -91,18 +91,27 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             ResourcePreprocessor preprocessor = (ResourcePreprocessor) getPreprocessor.invoke(mergeResourcesTask);
             List<ResourceSet> resourceSets = (List<ResourceSet>) getConfiguredResourceSets.invoke(mergeResourcesTask, preprocessor);
 
+            List<File> waitDeflateDirs = new ArrayList<>();
+
+            //将 resourceSets 中的res 文件路径 替换为 我们自己的
             for (ResourceSet resourceSet : resourceSets) {
                 List<File> sourceFiles = resourceSet.getSourceFiles()
-                System.out.println("rs= " + resourceSet.toString());
+                List<File> newSourceFiles = new ArrayList<>();
                 for (File file : sourceFiles) {
                     if (file.exists()) {
-                        FileUtils.copyDirectory(file, getCacheDir(resourceSet, file))
+                        File resCacheDir = getCacheDir(resourceSet, file)
+                        newSourceFiles.add(resCacheDir)
+                        FileUtils.copyDirectory(file, resCacheDir)
                     }
+                    sourceFiles.clear()
+                    sourceFiles.addAll(newSourceFiles)
+                    waitDeflateDirs.addAll(newSourceFiles)
                 }
+                System.out.println("rs= " + resourceSet.toString())
             }
 
-            // 有时间的话 生成的png  也可以 进行压缩 generatedPngsOutputDir,还是算了！！
-//                Deflateder.deflate(outputDirPath, generatedPngsOutputDir, mergeResourcesTask)
+
+            Deflateder.deflate(waitDeflateDirs)
         }
 
         mergeResourcesTask.doLast {
@@ -118,9 +127,9 @@ class ImageDeflatedPlugin implements Plugin<Project> {
         String newFileName
 
         if (file.parentFile != null) {
-            newFileName = resourceSet.configName.replaceAll(":","_") + "-" + file.parentFile.name + "-" + MD5Utils.getMD5(file.absolutePath)
+            newFileName = resourceSet.configName.replaceAll(":", "_") + "-" + file.parentFile.name + "-" + MD5Utils.getMD5(file.absolutePath)
         } else {
-            newFileName = resourceSet.configName.replaceAll(":","_") + "-" + MD5Utils.getMD5(file.absolutePath)
+            newFileName = resourceSet.configName.replaceAll(":", "_") + "-" + MD5Utils.getMD5(file.absolutePath)
         }
 
         File newFile = new File(getCacheDirRoot(), newFileName)
@@ -128,8 +137,6 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             FileUtils.deleteDirectory(newFile)
 
         }
-
-        println("newFile=${newFile.getAbsolutePath()}")
 
         return newFile
     }
