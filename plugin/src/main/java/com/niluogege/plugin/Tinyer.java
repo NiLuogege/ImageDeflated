@@ -26,6 +26,8 @@ public class Tinyer {
         this.tinyConfig = tinyConfig;
 
         Tinify.setKey(tinyConfig.key);
+
+        System.out.println(tinyConfig.toString());
     }
 
     public void tiny() throws Exception {
@@ -33,17 +35,20 @@ public class Tinyer {
             if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
                 for (File waitDeflateDir : waitDeflateDirs) {
 
-                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, new TargetFileFilter(), new TargetDirFilter())) {
+                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, new TargetFileFilter(tinyConfig), new TargetDirFilter())) {
 
 
                         if (!file.isDirectory()) {
-
-                            System.out.println(file.getName());
-
                             String filePath = file.getAbsolutePath();
 
-                            Source source = Tinify.fromFile(filePath);
-                            source.toFile(filePath.replace(".png", "-origin.png"));
+                            int compressionCount = Tinify.compressionCount();
+                            System.out.println("compressionCount=" + compressionCount + " file=" + filePath);
+
+                            if (compressionCount < tinyConfig.compressionsCountPerMonth) {
+                                Source source = Tinify.fromFile(filePath);
+//                                source.toFile(filePath);
+                                source.toFile(filePath.replace(".png", "_origin.png"));
+                            }
                         }
                     }
                 }
@@ -53,14 +58,33 @@ public class Tinyer {
 
 
     private static class TargetFileFilter extends AbstractFileFilter {
+        private TinyConfig tinyConfig;
+
+        public TargetFileFilter(TinyConfig tinyConfig) {
+            this.tinyConfig = tinyConfig;
+        }
+
         @Override
         public boolean accept(File file) {
 
             String fileName = file.getName().toLowerCase();
-            if (!file.isDirectory() && (fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".jpeg"))) {
+            if (!file.isDirectory()
+                    && suffixFilter(fileName)
+                    && sizeFilter(file)) {
                 return true;
             }
             return false;
+        }
+
+        private boolean suffixFilter(String fileName) {
+            return !fileName.endsWith(".9.png")
+                    && (fileName.endsWith(".png")
+                    || fileName.endsWith(".jpg")
+                    || fileName.endsWith(".jpeg"));
+        }
+
+        private boolean sizeFilter(File file) {
+            return file.length() > tinyConfig.threshold;
         }
     }
 

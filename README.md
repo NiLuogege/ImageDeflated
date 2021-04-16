@@ -10,7 +10,7 @@ android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 - assert 目录下的 图片压缩，但不转webp (flutter项目的图片在这里，还有一些大图)
 - 输出压缩 和 转webp 的mapping表，看能不能搞成.md 表格样式 （tiny瘦身效果，webp瘦身效果，整体瘦身效果）
 - 衡量一下 要不要开多个线程提高 压缩速度
-- 
+- 忽略.9 文件
 
 ## 问题
 ####  为了最小的影响原有的项目，所以我们不能直接 dependOn  mergeResourcesTask 来修改  原始的图片，

@@ -132,10 +132,10 @@ class ImageDeflatedPlugin implements Plugin<Project> {
                     newSourceFiles.add(resCacheDir)
                     FileUtils.copyDirectory(file, resCacheDir)
                 }
-                sourceFiles.clear()
-                sourceFiles.addAll(newSourceFiles)
-                waitDeflateDirs.addAll(newSourceFiles)
             }
+            sourceFiles.clear()
+            sourceFiles.addAll(newSourceFiles)
+            waitDeflateDirs.addAll(newSourceFiles)
             System.out.println("rs= " + resourceSet.toString())
         }
         return waitDeflateDirs
