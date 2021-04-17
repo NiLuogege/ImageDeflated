@@ -1,6 +1,7 @@
 package com.niluogege.plugin.bean;
 
-import java.util.ArrayList;
+import com.niluogege.plugin.utils.RegexUtils;
+
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
@@ -11,13 +12,11 @@ public class BaseConfig {
 
     public void setWhiteList(HashSet<String> whiteList) {
 
-        System.out.println("setWhiteList= "+whiteList.toString());
-
         if (whiteList != null && whiteList.size() > 0) {
             this.whiteList = whiteList;
 
             for (String part : whiteList) {
-                whiteListPattern.add(Pattern.compile(part));
+                whiteListPattern.add(Pattern.compile(RegexUtils.convertToPatternString(part)));
             }
         }
     }

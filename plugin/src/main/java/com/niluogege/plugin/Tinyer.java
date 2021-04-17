@@ -96,7 +96,7 @@ public class Tinyer {
         private boolean whiteListFilter(String fileName) {
             for (Pattern pattern : whiteList) {
                 boolean matche = pattern.matcher(fileName).matches();
-                System.out.println("fileName= " + fileName + " pattern=" + pattern.toString() + " matche= " + matche);
+//                System.out.println("fileName= " + fileName + " pattern=" + pattern.toString() + " matche= " + matche);
                 if (matche) {
                     return false;
                 }
