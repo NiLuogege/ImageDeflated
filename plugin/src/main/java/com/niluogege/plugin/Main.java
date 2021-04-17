@@ -12,5 +12,6 @@ public class Main {
         Pattern pattern = Pattern.compile(RegexUtils.convertToPatternString("white*"));
         boolean matches = pattern.matcher("white_bg_center.png").matches();
         System.out.println("matches="+matches);
+
     }
 }

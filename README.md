@@ -24,7 +24,18 @@ android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 
 ## 注意：
 - gradle 插件版本 3.6.3
-
+- 名为 main$Generated 的 GeneratedResourceSet 中有一条路径会 指向 主工程的 main/res ,而 名为 main ResourceSet 也有指向 main\res
+我现在的做法是 重复处理 如下：
+```
+GeneratedResourceSet{main$Generated, 
+sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}, 
+ResourceSet{main, 
+sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}
+```
 
 ## 学到的
 ##### 1. merge***Resources Task 中 会使用 aapt2 将资源（图片，布局（xml）,values） 解析为一个扩展名为 .flat 的中间二进制文件。具体为

@@ -1,6 +1,7 @@
 package com.niluogege.plugin
 
 import com.android.build.gradle.tasks.MergeResources
+import com.android.ide.common.resources.GeneratedResourceSet
 import com.android.ide.common.resources.ResourcePreprocessor
 import com.android.ide.common.resources.ResourceSet
 import com.niluogege.plugin.bean.TinyConfig
@@ -118,6 +119,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
 
     private static List<File> changeSourceFile(List<ResourceSet> resourceSets) {
         List<File> waitDeflateDirs = new ArrayList<>();
+        System.out.println("替换前 resourceSet = " + resourceSets.toString())
 
         //将 resourceSets 中的res 文件路径 替换为 我们自己的
         for (ResourceSet resourceSet : resourceSets) {
@@ -133,8 +135,8 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             sourceFiles.clear()
             sourceFiles.addAll(newSourceFiles)
             waitDeflateDirs.addAll(newSourceFiles)
-            System.out.println("rs= " + resourceSet.toString())
         }
+        System.out.println("替换后 resourceSet = " + resourceSets.toString())
         return waitDeflateDirs
     }
 
@@ -152,6 +154,8 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             FileUtils.deleteDirectory(newFile)
 
         }
+
+//        System.out.println("res 文件替换 srcFile= " + file.getAbsolutePath() + " destFile= " + newFile.getAbsolutePath())
 
         return newFile
     }
