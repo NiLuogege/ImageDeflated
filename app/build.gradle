@@ -30,17 +30,20 @@ imageDeflated {
     tiny {
         open = true
         key = "Jd3rDN5x3R9QClQ1qS8zPNTqCw0dc48L"
-        threshold = 1024 * 5
+        threshold = 1024 * 11
         whiteList = [
-                "aaa",
-                "bbb",
+                "ic_launcher.png",
+                "ic_launcher_round",
+                "white*.png",
         ]
     }
 
     webp {
-        open = false
+        open = true
         whiteList = [
-                "ccc",
+                "ic_launcher.png",
+                "ic_launcher_round",
+                "logo*.png",
         ]
     }
 }
