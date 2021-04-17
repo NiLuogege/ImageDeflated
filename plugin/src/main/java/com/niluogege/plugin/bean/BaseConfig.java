@@ -11,10 +11,9 @@ public class BaseConfig {
     private HashSet<Pattern> whiteListPattern = new HashSet<>();
 
     public void setWhiteList(HashSet<String> whiteList) {
-
+        whiteListPattern.clear();
         if (whiteList != null && whiteList.size() > 0) {
             this.whiteList = whiteList;
-
             for (String part : whiteList) {
                 whiteListPattern.add(Pattern.compile(RegexUtils.convertToPatternString(part)));
             }

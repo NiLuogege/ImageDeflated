@@ -21,11 +21,15 @@ public class Tinyer {
 
     private List<File> waitDeflateDirs;
     private TinyConfig tinyConfig;
+    private final TargetFileFilter targetFileFilter;
+    private final TargetDirFilter targetDirFilter;
 
 
     public Tinyer(List<File> waitDeflateDirs, TinyConfig tinyConfig) {
         this.waitDeflateDirs = waitDeflateDirs;
         this.tinyConfig = tinyConfig;
+        targetFileFilter = new TargetFileFilter(tinyConfig);
+        targetDirFilter = new TargetDirFilter();
 
         Tinify.setKey(tinyConfig.key);
 
@@ -37,7 +41,7 @@ public class Tinyer {
             if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
                 for (File waitDeflateDir : waitDeflateDirs) {
 
-                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, new TargetFileFilter(tinyConfig), new TargetDirFilter())) {
+                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
 
 
                         if (!file.isDirectory()) {

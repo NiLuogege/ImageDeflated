@@ -69,7 +69,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
 
         if (webp != null) {
             webpConfig.open = webp.open
-            tinyConfig.setWhiteList(webp.whiteList)
+            webpConfig.setWhiteList(webp.whiteList)
         }
     }
 
