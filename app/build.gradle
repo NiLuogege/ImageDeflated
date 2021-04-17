@@ -33,7 +33,7 @@ imageDeflated {
         threshold = 1024 * 11
         whiteList = [
                 "ic_launcher.png",
-                "ic_launcher_round",
+                "ic_launcher_round.png",
                 "white*.png",
         ]
     }
@@ -42,7 +42,7 @@ imageDeflated {
         open = true
         whiteList = [
                 "ic_launcher.png",
-                "ic_launcher_round",
+                "ic_launcher_round.png",
                 "logo*.png",
         ]
     }

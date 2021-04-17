@@ -64,16 +64,13 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             tinyConfig.compressionsCountPerMonth = tiny.compressionsCountPerMonth
             tinyConfig.threshold = tiny.threshold
             tinyConfig.open = tiny.open
-            tinyConfig.whiteList = tiny.whiteList
+            tinyConfig.setWhiteList(tiny.whiteList)
         }
 
         if (webp != null) {
             webpConfig.open = webp.open
-            webpConfig.whiteList = webp.whiteList
+            tinyConfig.setWhiteList(webp.whiteList)
         }
-
-        println("tiny  tinyKey=${tiny?.key} open=${tiny?.open} ")
-        println("webp  whiteList=${webp?.whiteList?.toString()} open=${webp?.open} ")
     }
 
 

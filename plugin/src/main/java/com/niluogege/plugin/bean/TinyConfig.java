@@ -12,7 +12,7 @@ public class TinyConfig extends BaseConfig {
                 ", threshold=" + threshold +
                 ", compressionsCountPerMonth=" + compressionsCountPerMonth +
                 ", open=" + open +
-                ", whiteList=" + whiteList +
+                ", whiteList=" + getWhiteList() +
                 '}';
     }
 }

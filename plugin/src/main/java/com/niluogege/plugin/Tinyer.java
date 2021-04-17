@@ -9,7 +9,9 @@ import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Tinyer {
     private static List<String> targetDirName = new ArrayList<String>() {{
@@ -59,9 +61,11 @@ public class Tinyer {
 
     private static class TargetFileFilter extends AbstractFileFilter {
         private TinyConfig tinyConfig;
+        private HashSet<Pattern> whiteList;
 
         public TargetFileFilter(TinyConfig tinyConfig) {
             this.tinyConfig = tinyConfig;
+            this.whiteList = tinyConfig.getWhiteList();
         }
 
         @Override
@@ -70,7 +74,9 @@ public class Tinyer {
             String fileName = file.getName().toLowerCase();
             if (!file.isDirectory()
                     && suffixFilter(fileName)
-                    && sizeFilter(file)) {
+                    && sizeFilter(file)
+                    && whiteListFilter(fileName)
+            ) {
                 return true;
             }
             return false;
@@ -85,6 +91,17 @@ public class Tinyer {
 
         private boolean sizeFilter(File file) {
             return file.length() > tinyConfig.threshold;
+        }
+
+        private boolean whiteListFilter(String fileName) {
+            for (Pattern pattern : whiteList) {
+                boolean matche = pattern.matcher(fileName).matches();
+                System.out.println("fileName= " + fileName + " pattern=" + pattern.toString() + " matche= " + matche);
+                if (matche) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
