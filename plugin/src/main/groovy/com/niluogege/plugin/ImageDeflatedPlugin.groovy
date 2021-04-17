@@ -1,7 +1,6 @@
 package com.niluogege.plugin
 
 import com.android.build.gradle.tasks.MergeResources
-import com.android.ide.common.resources.GeneratedResourceSet
 import com.android.ide.common.resources.ResourcePreprocessor
 import com.android.ide.common.resources.ResourceSet
 import com.niluogege.plugin.bean.TinyConfig
@@ -15,7 +14,6 @@ import com.niluogege.plugin.utils.ReflectUtil
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.impldep.com.amazonaws.util.Md5Utils
 
 import java.lang.reflect.Method
 

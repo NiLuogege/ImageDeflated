@@ -1,6 +1,7 @@
 package com.niluogege.plugin;
 
 import com.niluogege.plugin.bean.TinyConfig;
+import com.niluogege.plugin.bean.WebpConfig;
 import com.tinify.Source;
 import com.tinify.Tinify;
 
@@ -13,27 +14,27 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class Tinyer {
+public class Webper {
+
 
     private List<File> waitDeflateDirs;
-    private TinyConfig tinyConfig;
+    private WebpConfig webpConfig;
     private final TargetFileFilter targetFileFilter;
     private final TargetDirFilter targetDirFilter;
 
 
-    public Tinyer(List<File> waitDeflateDirs, TinyConfig tinyConfig) {
+    public Webper(List<File> waitDeflateDirs, WebpConfig webpConfig) {
         this.waitDeflateDirs = waitDeflateDirs;
-        this.tinyConfig = tinyConfig;
-        targetFileFilter = new TargetFileFilter(tinyConfig);
+        this.webpConfig = webpConfig;
+        targetFileFilter = new TargetFileFilter(webpConfig);
         targetDirFilter = new TargetDirFilter();
 
-        Tinify.setKey(tinyConfig.key);
 
-        System.out.println(tinyConfig.toString());
+        System.out.println(webpConfig.toString());
     }
 
-    public void tiny() throws Exception {
-        if (tinyConfig.open) {
+    public void webp() throws Exception {
+        if (webpConfig.open) {
             if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
                 for (File waitDeflateDir : waitDeflateDirs) {
 
@@ -43,14 +44,7 @@ public class Tinyer {
                         if (!file.isDirectory()) {
                             String filePath = file.getAbsolutePath();
 
-                            int compressionCount = Tinify.compressionCount();
-                            System.out.println("compressionCount=" + compressionCount + " file=" + filePath);
 
-                            if (compressionCount < tinyConfig.compressionsCountPerMonth) {
-                                Source source = Tinify.fromFile(filePath);
-                                source.toFile(filePath);
-//                                source.toFile(filePath.replace(".png", "_origin.png"));
-                            }
                         }
                     }
                 }
@@ -60,12 +54,12 @@ public class Tinyer {
 
 
     private static class TargetFileFilter extends AbstractFileFilter {
-        private TinyConfig tinyConfig;
+        private WebpConfig tinyConfig;
         private HashSet<Pattern> whiteList;
 
-        public TargetFileFilter(TinyConfig tinyConfig) {
-            this.tinyConfig = tinyConfig;
-            this.whiteList = tinyConfig.getWhiteList();
+        public TargetFileFilter(WebpConfig webpConfig) {
+            this.tinyConfig = webpConfig;
+            this.whiteList = webpConfig.getWhiteList();
         }
 
         @Override
@@ -74,7 +68,6 @@ public class Tinyer {
             String fileName = file.getName().toLowerCase();
             if (!file.isDirectory()
                     && suffixFilter(fileName)
-                    && sizeFilter(file)
                     && whiteListFilter(fileName)
             ) {
                 return true;
@@ -89,9 +82,6 @@ public class Tinyer {
                     || fileName.endsWith(".jpeg"));
         }
 
-        private boolean sizeFilter(File file) {
-            return file.length() > tinyConfig.threshold;
-        }
 
         private boolean whiteListFilter(String fileName) {
             for (Pattern pattern : whiteList) {
@@ -104,5 +94,4 @@ public class Tinyer {
             return true;
         }
     }
-
 }
