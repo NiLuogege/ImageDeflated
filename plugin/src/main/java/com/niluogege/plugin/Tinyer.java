@@ -52,8 +52,8 @@ public class Tinyer {
 
                             if (compressionCount < tinyConfig.compressionsCountPerMonth) {
                                 Source source = Tinify.fromFile(filePath);
-//                                source.toFile(filePath);
-                                source.toFile(filePath.replace(".png", "_origin.png"));
+                                source.toFile(filePath);
+//                                source.toFile(filePath.replace(".png", "_origin.png"));
                             }
                         }
                     }

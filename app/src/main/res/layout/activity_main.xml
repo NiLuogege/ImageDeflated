@@ -21,4 +21,10 @@
         android:layout_height="100dp"
         android:src="@mipmap/home_select" />
 
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_dialog_evaluate_app_head" />
+
 </LinearLayout>
