@@ -8,6 +8,8 @@ dependencies {
     implementation 'commons-io:commons-io:2.8.0'
     //
     implementation 'com.android.tools.build:gradle:3.6.3'
+    //cwebp
+    implementation 'com.niluogege.tools:cwebp:1.2.0@exe'
 }
 
 //创建本地仓库 用于调试

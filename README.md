@@ -20,7 +20,7 @@ android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
   - hook processDebugResources 修改其输入文件的路径？？
   - doFirst 压缩图片 并修改其输入文件路径？？
 
-
+#### 如何优雅的解决 cwebp.exe 这个依赖
 
 ## 注意：
 - gradle 插件版本 3.6.3

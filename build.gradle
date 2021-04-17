@@ -8,6 +8,7 @@ buildscript {
         maven {
             url uri('E:\\111work\\code\\code_me\\myGitHub\\ImageDeflated\\repo')
         }
+        maven { url 'http://47.110.141.101:8081/repository/xhjV2/' }
 
         google()
         jcenter()
@@ -24,6 +25,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'http://47.110.141.101:8081/repository/xhjV2/' }
         google()
         jcenter()
         
