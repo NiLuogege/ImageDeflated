@@ -6,26 +6,32 @@ import com.tinify.Tinify;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class Tinyer {
 
+    private static final String recordFileName = "tiny.md";
     private List<File> waitDeflateDirs;
     private TinyConfig tinyConfig;
     private final TargetFileFilter targetFileFilter;
     private final TargetDirFilter targetDirFilter;
+    private RecordWriter recordBw = null;
 
 
-    public Tinyer(List<File> waitDeflateDirs, TinyConfig tinyConfig) {
+    public Tinyer(List<File> waitDeflateDirs, TinyConfig tinyConfig) throws Exception {
         this.waitDeflateDirs = waitDeflateDirs;
         this.tinyConfig = tinyConfig;
         targetFileFilter = new TargetFileFilter(tinyConfig);
         targetDirFilter = new TargetDirFilter();
 
         Tinify.setKey(tinyConfig.key);
+
+        recordBw = new RecordWriter(tinyConfig,recordFileName);
 
         System.out.println(tinyConfig.toString());
     }
@@ -42,18 +48,19 @@ public class Tinyer {
                             String filePath = file.getAbsolutePath();
 
                             int compressionCount = Tinify.compressionCount();
-                            System.out.println("compressionCount=" + compressionCount + " file=" + filePath);
 
                             if (compressionCount < tinyConfig.compressionsCountPerMonth) {
                                 Source source = Tinify.fromFile(filePath);
                                 source.toFile(filePath);
-//                                source.toFile(filePath.replace(".png", "_origin.png"));
+                            } else {
+                                System.out.println("tiny compressionCount not enough" + " file=" + filePath);
                             }
                         }
                     }
                 }
             }
         }
+        recordBw.close();
     }
 
 

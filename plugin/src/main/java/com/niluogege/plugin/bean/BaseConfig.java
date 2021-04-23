@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 public class BaseConfig {
     public boolean open;
+    public String recordFilePath;
     private HashSet<String> whiteList = new HashSet<>();
     private HashSet<Pattern> whiteListPattern = new HashSet<>();
 
