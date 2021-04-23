@@ -1,16 +1,11 @@
 package com.niluogege.plugin;
 
-import com.niluogege.plugin.bean.TinyConfig;
 import com.niluogege.plugin.bean.WebpConfig;
 import com.niluogege.plugin.utils.CmdUtils;
-import com.tinify.Source;
-import com.tinify.Tinify;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -58,7 +53,7 @@ public class Webper {
         return fileName.substring(0, fileName.lastIndexOf("."));
     }
 
-    private static class TargetFileFilter extends AbstractFileFilter {
+    private static class TargetFileFilter extends BaseTargetFileFilter {
         private WebpConfig tinyConfig;
         private HashSet<Pattern> whiteList;
 
@@ -67,36 +62,10 @@ public class Webper {
             this.whiteList = webpConfig.getWhiteList();
         }
 
+
         @Override
-        public boolean accept(File file) {
-
-            String fileName = file.getName().toLowerCase();
-            if (!file.isDirectory()
-                    && suffixFilter(fileName)
-                    && whiteListFilter(fileName)
-            ) {
-                return true;
-            }
-            return false;
-        }
-
-        private boolean suffixFilter(String fileName) {
-            return !fileName.endsWith(".9.png")
-                    && (fileName.endsWith(".png")
-                    || fileName.endsWith(".jpg")
-                    || fileName.endsWith(".jpeg"));
-        }
-
-
-        private boolean whiteListFilter(String fileName) {
-            for (Pattern pattern : whiteList) {
-                boolean matche = pattern.matcher(fileName).matches();
-//                System.out.println("fileName= " + fileName + " pattern=" + pattern.toString() + " matche= " + matche);
-                if (matche) {
-                    return false;
-                }
-            }
-            return true;
+        HashSet<Pattern> getWhiteList() {
+            return whiteList;
         }
     }
 }

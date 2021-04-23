@@ -5,10 +5,8 @@ import com.tinify.Source;
 import com.tinify.Tinify;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -59,7 +57,7 @@ public class Tinyer {
     }
 
 
-    private static class TargetFileFilter extends AbstractFileFilter {
+    private static class TargetFileFilter extends BaseTargetFileFilter {
         private TinyConfig tinyConfig;
         private HashSet<Pattern> whiteList;
 
@@ -69,39 +67,17 @@ public class Tinyer {
         }
 
         @Override
-        public boolean accept(File file) {
-
-            String fileName = file.getName().toLowerCase();
-            if (!file.isDirectory()
-                    && suffixFilter(fileName)
-                    && sizeFilter(file)
-                    && whiteListFilter(fileName)
-            ) {
-                return true;
-            }
-            return false;
+        HashSet<Pattern> getWhiteList() {
+            return whiteList;
         }
 
-        private boolean suffixFilter(String fileName) {
-            return !fileName.endsWith(".9.png")
-                    && (fileName.endsWith(".png")
-                    || fileName.endsWith(".jpg")
-                    || fileName.endsWith(".jpeg"));
+        @Override
+        protected boolean customAccept(String fileName, File file) {
+            return sizeFilter(file);
         }
 
         private boolean sizeFilter(File file) {
             return file.length() > tinyConfig.threshold;
-        }
-
-        private boolean whiteListFilter(String fileName) {
-            for (Pattern pattern : whiteList) {
-                boolean matche = pattern.matcher(fileName).matches();
-//                System.out.println("fileName= " + fileName + " pattern=" + pattern.toString() + " matche= " + matche);
-                if (matche) {
-                    return false;
-                }
-            }
-            return true;
         }
     }
 
