@@ -1,6 +1,7 @@
 package com.niluogege.plugin;
 
-import com.niluogege.plugin.bean.BaseConfig;
+import com.niluogege.plugin.bean.TinyConfig;
+import com.niluogege.plugin.bean.WebpConfig;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -11,20 +12,48 @@ public class RecordWriter {
 
     private final BufferedWriter recordBw;
 
-    public RecordWriter(BaseConfig config, String fileName) throws Exception {
-        recordBw = new BufferedWriter(new FileWriter(new File(config.recordFilePath, fileName)));
+    public RecordWriter(File file, TinyConfig tinyConfig, WebpConfig webpConfig) throws Exception {
+        recordBw = new BufferedWriter(new FileWriter(file));
+        writeConfig(tinyConfig, webpConfig);
         writeTitle();
-        recordBw.write(config.getClass().getSimpleName() + " == " + config.toString());
     }
 
 
-    public void close() throws IOException {
-        recordBw.flush();
-        recordBw.close();
+    public void writeConfig(TinyConfig tinyConfig, WebpConfig webpConfig) throws IOException {
+        recordBw.append("### 配置")
+                .append("\n")
+                .append("- tinyConfig").append(" => ").append(tinyConfig.toString())
+                .append("\n")
+                .append("- webpConfig").append(" => ").append(webpConfig.toString())
+                .append("\n")
+                .flush();
     }
+
 
     public void writeTitle() throws IOException {
-        recordBw.write("### ");
+        recordBw.append("### 详细信息")
+                .append("\n")
+                .append("| 文件  | tiny前/kb  |tiny后/kb  |webp后/kb  |总压缩率%  |")
+                .append("\n")
+                .append("|---|---|---|---|---|")
+                .append("\n")
+                .flush();
     }
+
+
+    public BufferedWriter getWriter() {
+        return recordBw;
+    }
+
+
+    public void close() {
+        try {
+            recordBw.flush();
+            recordBw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

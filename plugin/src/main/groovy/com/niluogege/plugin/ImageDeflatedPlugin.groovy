@@ -100,7 +100,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
 
             List<File> waitDeflateDirs = changeSourceFile(resourceSets)
 
-            Deflateder.deflate(waitDeflateDirs, tinyConfig, webpConfig)
+            Deflateder.deflate(waitDeflateDirs, getCacheDirRoot().getAbsolutePath(), tinyConfig, webpConfig)
         }
 
         mergeResourcesTask.doLast {

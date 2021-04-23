@@ -25,13 +25,15 @@ public class Webper {
         System.out.println(webpConfig.toString());
     }
 
-    public void webp(File file) throws Exception {
+    public boolean webp(File file) throws Exception {
         if (webpConfig.open && !file.isDirectory() && targetFileFilter.accept(file)) {
             String filePath = file.getAbsolutePath();
             String webpFilePath = new File(file.getParentFile(), getFileNameWithoutSuffix(file) + ".webp").getAbsolutePath();
             CmdUtils.runCmd(webpConfig.path, "-q", webpConfig.quality + "", filePath, "-o", webpFilePath);
             file.delete();
+            return true;
         }
+        return false;
     }
 
     //获取不带后缀名的文件名

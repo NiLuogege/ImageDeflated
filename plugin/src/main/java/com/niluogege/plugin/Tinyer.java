@@ -28,7 +28,7 @@ public class Tinyer {
         System.out.println(tinyConfig.toString());
     }
 
-    public void tiny(File file) throws Exception {
+    public boolean tiny(File file) throws Exception {
         if (tinyConfig.open && !file.isDirectory() && targetFileFilter.accept(file)) {
             String filePath = file.getAbsolutePath();
 
@@ -40,7 +40,9 @@ public class Tinyer {
             } else {
                 System.out.println("tiny compressionCount not enough" + " file=" + filePath);
             }
+            return true;
         }
+        return false;
     }
 
 
