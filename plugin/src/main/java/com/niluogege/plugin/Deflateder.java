@@ -28,7 +28,7 @@ public class Deflateder {
                 for (File waitDeflateDir : waitDeflateDirs) {
 
                     for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, FileFileFilter.FILE, targetDirFilter)) {
-                        if (!file.isDirectory()) {
+                        if (!file.isDirectory() && suffixFilter(file.getName())) {
                             long startFileLength = file.length();
                             BufferedWriter writer = rw.getWriter();
                             writer.append("|")
@@ -54,17 +54,18 @@ public class Deflateder {
                             }
 
                             long endFileLength = file.length();
-                            writer.append((int) (endFileLength / startFileLength * 100) + "").append("|");
+                            writer.append((int) ((endFileLength / startFileLength) * 100) + "").append("|");
                             writer.append("\n");
                             writer.flush();
 
-                            System.out.print(".");
                         }
+                        System.out.print(".");
                     }
                 }
             }
 
             long endTime = System.currentTimeMillis();
+            System.out.println("");
             System.out.println("imageDeflated success. cost time " + (endTime - startTime) / 1000 + "s . record in = " + recordFile.getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,8 +75,15 @@ public class Deflateder {
 
     }
 
+    private static boolean suffixFilter(String fileName) {
+        return !fileName.endsWith(".9.png")
+                && (fileName.endsWith(".png")
+                || fileName.endsWith(".jpg")
+                || fileName.endsWith(".jpeg"));
+    }
+
     private static String getKb(File file) {
-        return (int) (file.length() / 1024) + "";
+        return file.length() + "";
     }
 
 }

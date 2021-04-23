@@ -33,7 +33,7 @@ public class RecordWriter {
     public void writeTitle() throws IOException {
         recordBw.append("### 详细信息")
                 .append("\n")
-                .append("| 文件  | tiny前/kb  |tiny后/kb  |webp后/kb  |总压缩率%  |")
+                .append("| 文件  | tiny前/byte  |tiny后/byte  |webp后/byte  |总压缩率%  |")
                 .append("\n")
                 .append("|---|---|---|---|---|")
                 .append("\n")
