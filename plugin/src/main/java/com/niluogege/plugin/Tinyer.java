@@ -15,52 +15,32 @@ import java.util.regex.Pattern;
 
 public class Tinyer {
 
-    private static final String recordFileName = "tiny.md";
-    private List<File> waitDeflateDirs;
     private TinyConfig tinyConfig;
     private final TargetFileFilter targetFileFilter;
-    private final TargetDirFilter targetDirFilter;
-    private RecordWriter recordBw = null;
 
 
-    public Tinyer(List<File> waitDeflateDirs, TinyConfig tinyConfig) throws Exception {
-        this.waitDeflateDirs = waitDeflateDirs;
+    public Tinyer(TinyConfig tinyConfig) throws Exception {
         this.tinyConfig = tinyConfig;
         targetFileFilter = new TargetFileFilter(tinyConfig);
-        targetDirFilter = new TargetDirFilter();
 
         Tinify.setKey(tinyConfig.key);
-
-        recordBw = new RecordWriter(tinyConfig,recordFileName);
 
         System.out.println(tinyConfig.toString());
     }
 
-    public void tiny() throws Exception {
-        if (tinyConfig.open) {
-            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
-                for (File waitDeflateDir : waitDeflateDirs) {
+    public void tiny(File file) throws Exception {
+        if (tinyConfig.open && !file.isDirectory() && targetFileFilter.accept(file)) {
+            String filePath = file.getAbsolutePath();
 
-                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
+            int compressionCount = Tinify.compressionCount();
 
-
-                        if (!file.isDirectory()) {
-                            String filePath = file.getAbsolutePath();
-
-                            int compressionCount = Tinify.compressionCount();
-
-                            if (compressionCount < tinyConfig.compressionsCountPerMonth) {
-                                Source source = Tinify.fromFile(filePath);
-                                source.toFile(filePath);
-                            } else {
-                                System.out.println("tiny compressionCount not enough" + " file=" + filePath);
-                            }
-                        }
-                    }
-                }
+            if (compressionCount < tinyConfig.compressionsCountPerMonth) {
+                Source source = Tinify.fromFile(filePath);
+                source.toFile(filePath);
+            } else {
+                System.out.println("tiny compressionCount not enough" + " file=" + filePath);
             }
         }
-        recordBw.close();
     }
 
 

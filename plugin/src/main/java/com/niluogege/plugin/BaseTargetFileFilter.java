@@ -1,7 +1,5 @@
 package com.niluogege.plugin;
 
-import com.niluogege.plugin.bean.WebpConfig;
-
 import org.apache.commons.io.filefilter.AbstractFileFilter;
 
 import java.io.File;

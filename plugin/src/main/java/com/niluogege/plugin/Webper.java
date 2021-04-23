@@ -16,34 +16,21 @@ public class Webper {
     private List<File> waitDeflateDirs;
     private WebpConfig webpConfig;
     private final TargetFileFilter targetFileFilter;
-    private final TargetDirFilter targetDirFilter;
-
 
     public Webper(List<File> waitDeflateDirs, WebpConfig webpConfig) {
         this.waitDeflateDirs = waitDeflateDirs;
         this.webpConfig = webpConfig;
         targetFileFilter = new TargetFileFilter(webpConfig);
-        targetDirFilter = new TargetDirFilter();
-
 
         System.out.println(webpConfig.toString());
     }
 
-    public void webp() throws Exception {
-        if (webpConfig.open) {
-            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
-                for (File waitDeflateDir : waitDeflateDirs) {
-
-                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
-                        if (!file.isDirectory()) {
-                            String filePath = file.getAbsolutePath();
-                            String webpFilePath = new File(file.getParentFile(), getFileNameWithoutSuffix(file) + ".webp").getAbsolutePath();
-                            CmdUtils.runCmd(webpConfig.path, "-q", webpConfig.quality + "", filePath, "-o", webpFilePath);
-                            file.delete();
-                        }
-                    }
-                }
-            }
+    public void webp(File file) throws Exception {
+        if (webpConfig.open && !file.isDirectory() && targetFileFilter.accept(file)) {
+            String filePath = file.getAbsolutePath();
+            String webpFilePath = new File(file.getParentFile(), getFileNameWithoutSuffix(file) + ".webp").getAbsolutePath();
+            CmdUtils.runCmd(webpConfig.path, "-q", webpConfig.quality + "", filePath, "-o", webpFilePath);
+            file.delete();
         }
     }
 
