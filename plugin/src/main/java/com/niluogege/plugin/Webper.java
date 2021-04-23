@@ -44,6 +44,7 @@ public class Webper {
                             String filePath = file.getAbsolutePath();
                             String webpFilePath = new File(file.getParentFile(), getFileNameWithoutSuffix(file) + ".webp").getAbsolutePath();
                             CmdUtils.runCmd(webpConfig.path, "-q", webpConfig.quality + "", filePath, "-o", webpFilePath);
+                            file.delete();
                         }
                     }
                 }
