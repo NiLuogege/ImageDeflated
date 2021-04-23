@@ -2,6 +2,7 @@ package com.niluogege.plugin;
 
 import com.niluogege.plugin.bean.TinyConfig;
 import com.niluogege.plugin.bean.WebpConfig;
+import com.niluogege.plugin.utils.CmdUtils;
 import com.tinify.Source;
 import com.tinify.Tinify;
 
@@ -34,24 +35,27 @@ public class Webper {
     }
 
     public void webp() throws Exception {
-//        if (webpConfig.open) {
-//            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
-//                for (File waitDeflateDir : waitDeflateDirs) {
-//
-//                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
-//
-//
-//                        if (!file.isDirectory()) {
-//                            String filePath = file.getAbsolutePath();
-//
-//
-//                        }
-//                    }
-//                }
-//            }
-//        }
+        if (webpConfig.open) {
+            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
+                for (File waitDeflateDir : waitDeflateDirs) {
+
+                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
+                        if (!file.isDirectory()) {
+                            String filePath = file.getAbsolutePath();
+                            String webpFilePath = new File(file.getParentFile(), getFileNameWithoutSuffix(file) + ".webp").getAbsolutePath();
+                            CmdUtils.runCmd(webpConfig.path, "-q", webpConfig.quality + "", filePath, "-o", webpFilePath);
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    //获取不带后缀名的文件名
+    private String getFileNameWithoutSuffix(File file) {
+        String fileName = file.getName();
+        return fileName.substring(0, fileName.lastIndexOf("."));
+    }
 
     private static class TargetFileFilter extends AbstractFileFilter {
         private WebpConfig tinyConfig;

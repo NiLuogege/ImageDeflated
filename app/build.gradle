@@ -50,7 +50,9 @@ imageDeflated {
 
     webp {
         artifact = "com.niluogege.tools:cwebp:1.2.0"
+        //path = "/usr/libwebp/bin/cwebp"
         open = true
+        quality = 80
         whiteList = [
                 "ic_launcher.png",
                 "ic_launcher_round.png",

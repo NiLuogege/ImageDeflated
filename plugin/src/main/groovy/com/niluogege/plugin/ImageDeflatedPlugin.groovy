@@ -70,7 +70,8 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             webp.loadArtifact(project)
             webpConfig.open = webp.open
             webpConfig.setWhiteList(webp.whiteList)
-            webpConfig.path=webp.path
+            webpConfig.path = webp.path
+            webpConfig.quality = webp.quality
         }
     }
 

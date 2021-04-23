@@ -6,6 +6,7 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.internal.artifacts.configurations.ConfigurationInternal
 
 class WebpExtension extends BaseExtension {
+    int quality = 75 //压缩质量 0-100
     private String artifact
     private String path
 
@@ -45,10 +46,10 @@ class WebpExtension extends BaseExtension {
             //创建依赖
             def groupId, artifactId, version
             (groupId, artifactId, version) = this.artifact.split(":")
-            def notation = [group     : groupId,
-                            name      : artifactId,
-                            version   : version,
-                            ext       : 'exe']
+            def notation = [group  : groupId,
+                            name   : artifactId,
+                            version: version,
+                            ext    : 'exe']
 
             //添加依赖
             Dependency dep = project.dependencies.add(config.getName(), notation)
