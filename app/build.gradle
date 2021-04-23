@@ -49,6 +49,7 @@ imageDeflated {
     }
 
     webp {
+        artifact = "com.niluogege.tools:cwebp:1.2.0"
         open = true
         whiteList = [
                 "ic_launcher.png",

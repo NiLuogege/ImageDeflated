@@ -9,13 +9,13 @@ dependencies {
     //
     implementation 'com.android.tools.build:gradle:3.6.3'
     //cwebp
-    implementation 'com.niluogege.tools:cwebp:1.2.0@exe'
+//    implementation 'com.niluogege.tools:cwebp:1.2.0@exe'
 }
 
 //创建本地仓库 用于调试
 apply plugin: 'maven'
 group = 'com.niluogege.imageDeflated'
-version = '1.0.59'
+version = '1.0.66'
 
 uploadArchives {
     repositories {

@@ -34,22 +34,22 @@ public class Webper {
     }
 
     public void webp() throws Exception {
-        if (webpConfig.open) {
-            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
-                for (File waitDeflateDir : waitDeflateDirs) {
-
-                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
-
-
-                        if (!file.isDirectory()) {
-                            String filePath = file.getAbsolutePath();
-
-
-                        }
-                    }
-                }
-            }
-        }
+//        if (webpConfig.open) {
+//            if (waitDeflateDirs != null && waitDeflateDirs.size() > 0) {
+//                for (File waitDeflateDir : waitDeflateDirs) {
+//
+//                    for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, targetFileFilter, targetDirFilter)) {
+//
+//
+//                        if (!file.isDirectory()) {
+//                            String filePath = file.getAbsolutePath();
+//
+//
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 
 

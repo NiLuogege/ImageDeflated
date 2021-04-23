@@ -19,7 +19,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         //本地仓库 用于调试
-        classpath 'com.niluogege.imageDeflated:plugin:1.0.59'
+        classpath 'com.niluogege.imageDeflated:plugin:1.0.66'
     }
 }
 
