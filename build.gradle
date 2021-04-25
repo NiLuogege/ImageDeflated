@@ -9,7 +9,7 @@ buildscript {
 //            url uri('E:\\111work\\code\\code_me\\myGitHub\\ImageDeflated\\repo')
 //        }
         maven { url 'http://47.110.141.101:8081/repository/xhjV2/' }
-
+        maven { url 'https://jitpack.io' }
         google()
         jcenter()
         
@@ -20,6 +20,8 @@ buildscript {
 
         //jitpack
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+
+        classpath 'com.github.NiLuogege:ImageDeflated:0.0.4'
 
         //本地仓库 用于调试
 //        classpath 'com.niluogege.imageDeflated:plugin:1.0.79'
