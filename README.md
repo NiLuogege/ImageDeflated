@@ -1,50 +1,80 @@
 # ImageDeflated
 android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 
+# 注意
+目前只测试了 gradle 插件版本为 3.6.3 的情况，其他版本不保证能成功运行
 
-## Tiny
-文件超过10kb 才进行压缩，tiny的免费压缩次数有限，需要珍惜使用
-
-
-## 包含的功能点记录
-- assert 目录下的 图片压缩，但不转webp (flutter项目的图片在这里，还有一些大图)
-- 输出压缩 和 转webp 的mapping表，看能不能搞成.md 表格样式 （tiny瘦身效果，webp瘦身效果，整体瘦身效果）
-- 衡量一下 要不要开多个线程提高 压缩速度
+# 功能点记录
+- 三方依赖的图片资源会一并处理
 - 忽略.9 文件
+- 动态依赖 来优雅的处理 cwebp.exe 这个依赖
 
-## 使用
-cwebp 下载地址 https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html 我使用的是 `libwebp-1.2.0-windows-x64`
-
-
-## 问题
-####  为了最小的影响原有的项目，所以我们不能直接 dependOn  mergeResourcesTask 来修改  原始的图片，
-解决方案，hook 摸一个task，在打包的时候 将图片文件的路径进行修改。
-
-- 看看 processDebugResources (ProcessAndroidResources.class) 是不是 切入点
-  - hook processDebugResources 修改其输入文件的路径？？
-  - doFirst 压缩图片 并修改其输入文件路径？？
-
-#### 如何优雅的解决 cwebp.exe 这个依赖
-1. 上传到maven
-2. 动态获取到 依赖的具体文件路径
-
-#### 小文件由 png 转为 webp后 尺寸会变大
-解决方案 ： 设定阀值 小于多少的不进行 转换 ，对比发现 当 png 文件大小 大于 500 byte时会是正压缩，我们将阀值设置为 1024（1kb）
-
-## 注意：
-- gradle 插件版本 3.6.3
-- 名为 main$Generated 的 GeneratedResourceSet 中有一条路径会 指向 主工程的 main/res ,而 名为 main ResourceSet 也有指向 main\res
-我现在的做法是 重复处理 如下：
+# 使用
+1. 根目录下build.gradle 中添加依赖
 ```
-GeneratedResourceSet{main$Generated, 
-sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res, 
-E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
-E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}, 
-ResourceSet{main, 
-sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res, 
-E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
-E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}
+buildscript {
+    repositories {
+        maven { url 'https://jitpack.io' }
+        ...
+    }
+    dependencies {
+        classpath 'com.github.NiLuogege:ImageDeflated:1.0.0'
+        ...
+    }
+}
 ```
+2. app的build.gradle 中引用插件并进行配置
+```
+apply plugin: 'ImageDeflated'
+
+...
+
+
+imageDeflated {
+    tiny {
+        open = true
+        key = "xxx填入自己的keyxxx"
+        threshold = 1024 * 11
+        whiteList = [
+                "ic_launcher.png",
+                "ic_launcher_round.png",
+                "white*.png",
+        ]
+    }
+
+    webp {
+//        artifact = "com.niluogege.tools:cwebp:1.2.0" 
+        path = "E:\\libwebp-1.2.0\\bin\\cwebp.exe" 
+        open = true
+        quality = 80
+        whiteList = [
+                "ic_launcher.png",
+                "ic_launcher_round.png",
+                "logo*.png",
+        ]
+    }
+}
+
+需要注意下：
+    - tiny 的 key需要自己去[官网](https://tinypng.com/developers)申请。申请后直接替换即可。
+    - cwebp 下载地址 https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html 我使用的是 `libwebp-1.2.0-windows-x64`
+```
+
+3. 继承完成 运行 assembleDebug 看效果
+运行完成后会在 app/build/imageDeflated 下输出 record.md 用来记录这次图片的压缩情况。
+
+
+
+# 待做功能
+- 处理 assert 目录下的 图片资源 （flutter 的图片资源会 打包到这里）
+- 
+
+
+
+# changeLog
+- v1.0.0 完成 图片 自动压缩和 自动转webp
+
+
 
 ## 学到的
 ##### 1. merge***Resources Task 中 会使用 aapt2 将资源（图片，布局（xml）,values） 解析为一个扩展名为 .flat 的中间二进制文件。具体为
@@ -123,3 +153,16 @@ E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues
 
 
 ##### 3. 反射task 的时候 需要在 gradle 中，不能再 java中，因为拿不到具体的类名
+
+##### 4. 名为 main$Generated 的 GeneratedResourceSet 中有一条路径会 指向 主工程的 main/res ,而 名为 main ResourceSet 也有指向 main\res
+我现在的做法是 重复处理 如下：
+```
+GeneratedResourceSet{main$Generated, 
+sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}, 
+ResourceSet{main, 
+sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
+E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}
+```

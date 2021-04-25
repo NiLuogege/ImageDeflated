@@ -39,7 +39,7 @@ android {
 imageDeflated {
     tiny {
         open = true
-        key = "Jd3rDN5x3R9QClQ1qS8zPNTqCw0dc48L"
+        key = "xxxx"
         threshold = 1024 * 11
         whiteList = [
                 "ic_launcher.png",
