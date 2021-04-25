@@ -12,6 +12,10 @@ android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 - 衡量一下 要不要开多个线程提高 压缩速度
 - 忽略.9 文件
 
+## 使用
+cwebp 下载地址 https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html 我使用的是 `libwebp-1.2.0-windows-x64`
+
+
 ## 问题
 ####  为了最小的影响原有的项目，所以我们不能直接 dependOn  mergeResourcesTask 来修改  原始的图片，
 解决方案，hook 摸一个task，在打包的时候 将图片文件的路径进行修改。
