@@ -5,9 +5,9 @@ buildscript {
     repositories {
 
         //本地仓库 用于调试
-        maven {
-            url uri('E:\\111work\\code\\code_me\\myGitHub\\ImageDeflated\\repo')
-        }
+//        maven {
+//            url uri('E:\\111work\\code\\code_me\\myGitHub\\ImageDeflated\\repo')
+//        }
         maven { url 'http://47.110.141.101:8081/repository/xhjV2/' }
 
         google()
@@ -18,8 +18,11 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
+        //jitpack
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+
         //本地仓库 用于调试
-        classpath 'com.niluogege.imageDeflated:plugin:1.0.79'
+//        classpath 'com.niluogege.imageDeflated:plugin:1.0.79'
     }
 }
 
