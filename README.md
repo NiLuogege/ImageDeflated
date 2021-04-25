@@ -24,6 +24,9 @@ android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 1. 上传到maven
 2. 动态获取到 依赖的具体文件路径
 
+#### 小文件由 png 转为 webp后 尺寸会变大
+解决方案 ： 设定阀值 小于多少的不进行 转换 ，对比发现 当 png 文件大小 大于 500 byte时会是正压缩，我们将阀值设置为 1024（1kb）
+
 ## 注意：
 - gradle 插件版本 3.6.3
 - 名为 main$Generated 的 GeneratedResourceSet 中有一条路径会 指向 主工程的 main/res ,而 名为 main ResourceSet 也有指向 main\res

@@ -28,38 +28,51 @@ public class Deflateder {
                 for (File waitDeflateDir : waitDeflateDirs) {
 
                     for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, FileFileFilter.FILE, targetDirFilter)) {
-                        if (!file.isDirectory() && suffixFilter(file.getName())) {
+                        if (!file.isDirectory()) {
                             long startFileLength = file.length();
-                            BufferedWriter writer = rw.getWriter();
-                            writer.append("|")
-                                    .append(file.getParentFile().getName())
-                                    .append("/")
-                                    .append(file.getName())
-                                    .append("|")
-                                    .append(getKb(file))
-                                    .append("|");
 
-                            boolean tinyed = tinyer.tiny(file);
-                            if (tinyed) {
-                                writer.append(getKb(file)).append("|");
-                            } else {
-                                writer.append("/").append("|");
+                            File tinyedFile = tinyer.tiny(file);
+                            long tinyedFileLength = tinyedFile != null ? tinyedFile.length() : -1;
+
+
+                            File webpedFile = webper.webp(tinyedFile == null ? file : tinyedFile);
+                            long webpedFileLength = webpedFile != null ? webpedFile.length() : -1;
+
+
+                            if (tinyedFile != null || webpedFile != null) {
+                                String tinyedFileLengthStr = tinyedFileLength == -1 ? "/" : String.valueOf(tinyedFileLength);
+                                String webpedFileLengthStr = webpedFileLength == -1 ? "/" : String.valueOf(webpedFileLength);
+
+                                long denominator;
+                                if (webpedFileLength != -1) {
+                                    denominator = webpedFileLength;
+                                } else if (tinyedFileLength != -1) {
+                                    denominator = tinyedFileLength;
+                                } else {
+                                    denominator = startFileLength;
+                                }
+                                String compressionRatioStr = String.valueOf((1 - (denominator / startFileLength)) * 100);
+                                System.out.println("denominator= "+denominator+" startFileLength="+startFileLength+" compressionRatioStr= "+compressionRatioStr);
+
+                                BufferedWriter writer = rw.getWriter();
+                                writer.append("|")
+                                        .append(file.getParentFile().getName()).append("/").append(file.getName())
+                                        .append("|")
+                                        .append(String.valueOf(startFileLength))
+                                        .append("|")
+                                        .append(tinyedFileLengthStr)
+                                        .append("|")
+                                        .append(webpedFileLengthStr)
+                                        .append("|")
+                                        .append(compressionRatioStr)
+                                        .append("|")
+                                        .append("\n")
+                                        .flush();
                             }
 
-                            boolean webped = webper.webp(file);
-                            if (webped) {
-                                writer.append(getKb(file)).append("|");
-                            } else {
-                                writer.append("/").append("|");
-                            }
 
-                            long endFileLength = file.length();
-                            writer.append((int) ((endFileLength / startFileLength) * 100) + "").append("|");
-                            writer.append("\n");
-                            writer.flush();
-
+                            System.out.print(".");
                         }
-                        System.out.print(".");
                     }
                 }
             }
@@ -75,15 +88,5 @@ public class Deflateder {
 
     }
 
-    private static boolean suffixFilter(String fileName) {
-        return !fileName.endsWith(".9.png")
-                && (fileName.endsWith(".png")
-                || fileName.endsWith(".jpg")
-                || fileName.endsWith(".jpeg"));
-    }
-
-    private static String getKb(File file) {
-        return file.length() + "";
-    }
 
 }

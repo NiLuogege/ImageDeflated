@@ -7,6 +7,7 @@ import org.gradle.api.internal.artifacts.configurations.ConfigurationInternal
 
 class WebpExtension extends BaseExtension {
     int quality = 75 //压缩质量 0-100
+    long threshold = 1024 //1kb, 文件超过1kb 才进行压缩，对比发现 当 png 文件大小 大于 500 byte时才会是正压缩
     private String artifact
     private String path
 
