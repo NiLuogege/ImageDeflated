@@ -8,6 +8,8 @@ import org.apache.commons.io.filefilter.FileFileFilter;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.List;
 
 public class Deflateder {
@@ -39,39 +41,7 @@ public class Deflateder {
                             long webpedFileLength = webpedFile != null ? webpedFile.length() : -1;
 
 
-                            if (tinyedFile != null || webpedFile != null) {
-                                String tinyedFileLengthStr = tinyedFileLength == -1 ? "/" : String.valueOf(tinyedFileLength);
-                                String webpedFileLengthStr = webpedFileLength == -1 ? "/" : String.valueOf(webpedFileLength);
-
-                                long denominator;
-                                if (webpedFileLength != -1) {
-                                    denominator = webpedFileLength;
-                                } else if (tinyedFileLength != -1) {
-                                    denominator = tinyedFileLength;
-                                } else {
-                                    denominator = startFileLength;
-                                }
-                                String compressionRatioStr = String.valueOf((1 - (denominator / startFileLength)) * 100);
-                                System.out.println("denominator= "+denominator+" startFileLength="+startFileLength+" compressionRatioStr= "+compressionRatioStr);
-
-                                BufferedWriter writer = rw.getWriter();
-                                writer.append("|")
-                                        .append(file.getParentFile().getName()).append("/").append(file.getName())
-                                        .append("|")
-                                        .append(String.valueOf(startFileLength))
-                                        .append("|")
-                                        .append(tinyedFileLengthStr)
-                                        .append("|")
-                                        .append(webpedFileLengthStr)
-                                        .append("|")
-                                        .append(compressionRatioStr)
-                                        .append("|")
-                                        .append("\n")
-                                        .flush();
-                            }
-
-
-                            System.out.print(".");
+                            writeRecord(file, startFileLength, tinyedFile, tinyedFileLength, webpedFile, webpedFileLength);
                         }
                     }
                 }
@@ -88,5 +58,54 @@ public class Deflateder {
 
     }
 
+    private static void writeRecord(File file, long startFileLength, File tinyedFile, long tinyedFileLength, File webpedFile, long webpedFileLength) throws IOException {
+        if (isMainGenerated(file) && (tinyedFile != null || webpedFile != null)) {
+            String tinyedFileLengthStr = tinyedFileLength == -1 ? "/" : String.valueOf(tinyedFileLength);
+            String webpedFileLengthStr = webpedFileLength == -1 ? "/" : String.valueOf(webpedFileLength);
 
+            long denominator;
+            if (webpedFileLength != -1) {
+                denominator = webpedFileLength;
+            } else if (tinyedFileLength != -1) {
+                denominator = tinyedFileLength;
+            } else {
+                denominator = startFileLength;
+            }
+            NumberFormat format = NumberFormat.getInstance();
+            format.setMaximumFractionDigits(2);
+            float compressionRatio = (1 - ((float) denominator / (float) startFileLength)) * 100;
+
+            BufferedWriter writer = rw.getWriter();
+            writer.append("|")
+                    .append(file.getParentFile().getName()).append("/").append(file.getName())
+                    .append("|")
+                    .append(String.valueOf(startFileLength))
+                    .append("|")
+                    .append(tinyedFileLengthStr)
+                    .append("|")
+                    .append(webpedFileLengthStr)
+                    .append("|")
+                    .append(String.valueOf(format.format(compressionRatio)))
+                    .append("|")
+                    .append("\n")
+                    .flush();
+
+            System.out.println("imageDeflated working " + file.getName());
+            if (compressionRatio < 0) {
+                System.out.println("imageDeflated  is not work in file" + file.getName() + " add it to whiteList");
+            }
+        }
+    }
+
+    private static boolean isMainGenerated(File file) {
+        while (file.getParentFile() != null) {
+            if (file.getName().startsWith("main$Generated")) {
+                return true;
+            } else {
+                file = file.getParentFile();
+            }
+        }
+        return false;
+
+    }
 }
