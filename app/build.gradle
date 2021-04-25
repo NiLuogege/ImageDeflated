@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-//apply plugin: 'ImageDeflated'
+apply plugin: 'ImageDeflated'
 
 android {
     compileSdkVersion 30
@@ -35,31 +35,31 @@ android {
     }
 
 }
-//
-//imageDeflated {
-//    tiny {
-//        open = true
-//        key = "xxxx"
-//        threshold = 1024 * 11
-//        whiteList = [
-//                "ic_launcher.png",
-//                "ic_launcher_round.png",
-//                "white*.png",
-//        ]
-//    }
-//
-//    webp {
-////        artifact = "com.niluogege.tools:cwebp:1.2.0"
-//        path = "E:\\webp-1.2.0\\bin\\cwebp.exe"
-//        open = true
-//        quality = 80
-//        whiteList = [
-//                "ic_launcher.png",
-//                "ic_launcher_round.png",
-//                "logo*.png",
-//        ]
-//    }
-//}
+
+imageDeflated {
+    tiny {
+        open = true
+        key = "xxxx"
+        threshold = 1024 * 11
+        whiteList = [
+                "ic_launcher.png",
+                "ic_launcher_round.png",
+                "white*.png",
+        ]
+    }
+
+    webp {
+//        artifact = "com.niluogege.tools:cwebp:1.2.0"
+        path = "E:\\webp-1.2.0\\bin\\cwebp.exe"
+        open = true
+        quality = 80
+        whiteList = [
+                "ic_launcher.png",
+                "ic_launcher_round.png",
+                "logo*.png",
+        ]
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
