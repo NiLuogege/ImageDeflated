@@ -50,7 +50,7 @@ imageDeflated {
 
     webp {
 //        artifact = "com.niluogege.tools:cwebp:1.2.0"
-        path = "E:\\libwebp-1.2.0\\bin\\cwebp.exe"
+        path = "E:\\webp-1.2.0\\bin\\cwebp.exe"
         open = true
         quality = 80
         whiteList = [
