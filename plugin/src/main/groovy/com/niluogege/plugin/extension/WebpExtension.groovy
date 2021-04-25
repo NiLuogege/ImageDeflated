@@ -2,6 +2,7 @@ package com.niluogege.plugin.extension
 
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.internal.artifacts.configurations.ConfigurationInternal
 
@@ -39,10 +40,11 @@ class WebpExtension extends BaseExtension {
      */
     void loadArtifact(Project project) {
         if (path == null && artifact != null) {
-            //获取 implementation 这个 Configuration
-            ConfigurationInternal config = project.configurations.getByName("implementation")
-            //设置 可以被解析
-            config.setCanBeResolved(true)
+            Configuration config = project.configurations.create("ImageDeflatedLocatorWebp") {
+                visible = false
+                transitive = false
+                extendsFrom = []
+            }
 
             //创建依赖
             def groupId, artifactId, version
