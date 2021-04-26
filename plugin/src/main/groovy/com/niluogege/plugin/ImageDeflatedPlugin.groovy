@@ -39,11 +39,11 @@ class ImageDeflatedPlugin implements Plugin<Project> {
 
 
             android.applicationVariants.all { variant ->
-                createTask(project, variant)
+                stickmergeResourcesTask(project, variant)
             }
 
             android.buildTypes.all { buildType ->
-                createTask(project, buildType)
+                stickmergeResourcesTask(project, buildType)
             }
 
             extension2Config(imageDeflated)
@@ -77,18 +77,9 @@ class ImageDeflatedPlugin implements Plugin<Project> {
     }
 
 
-    private static void createTask(Project project, variant) {
-        def variantName = variant.name.capitalize()
-        def taskName = "imageDeflate$variantName"
-        if (project.tasks.findByName(taskName) == null) {
-            def imageDeflatedTask = project.tasks.create(taskName, ImageDeflatedTask)
-            MergeResources mergeResourcesTask = variant.mergeResourcesProvider.get()
-            mergeResourcesTask.dependsOn(imageDeflatedTask)
-
-            hookMergeResourcesTask(mergeResourcesTask)
-        }
-
-
+    private static void stickmergeResourcesTask(Project project, variant) {
+        MergeResources mergeResourcesTask = variant.mergeResourcesProvider.get()
+        hookMergeResourcesTask(mergeResourcesTask)
     }
 
     private static void hookMergeResourcesTask(MergeResources mergeResourcesTask) {
