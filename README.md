@@ -167,3 +167,7 @@ sources=[E:\111work\code\code_me\myGitHub\ImageDeflated\app\src\main\res,
 E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\rs\debug, 
 E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues\debug]}
 ```
+##### 5. png 转 webp 后 图片竟然变大了？
+原因是Webp并不支持灰度图带上透明通道这种类型，带上透明通道就将格式固定成了RGBA格式。因此导致了要保存的数据变大。
+参考：https://developer.aliyun.com/article/74634
+目前的解决方案是将这类图片 添加到 白名单中即可。
