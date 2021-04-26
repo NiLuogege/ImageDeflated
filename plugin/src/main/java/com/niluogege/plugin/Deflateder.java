@@ -59,7 +59,7 @@ public class Deflateder {
     }
 
     private static void writeRecord(File file, long startFileLength, File tinyedFile, long tinyedFileLength, File webpedFile, long webpedFileLength) throws IOException {
-        if (isMainGenerated(file) && (tinyedFile != null || webpedFile != null)) {
+        if (!isMainGenerated(file) && (tinyedFile != null || webpedFile != null)) {
             String tinyedFileLengthStr = tinyedFileLength == -1 ? "/" : String.valueOf(tinyedFileLength);
             String webpedFileLengthStr = webpedFileLength == -1 ? "/" : String.valueOf(webpedFileLength);
 
@@ -92,7 +92,7 @@ public class Deflateder {
 
             System.out.println("imageDeflated working " + file.getName());
             if (compressionRatio < 0) {
-                System.out.println("imageDeflated  is not work in file" + file.getName() + " add it to whiteList");
+                System.out.println("imageDeflated  is not work in file " + file.getName() + " add it to whiteList");
             }
         }
     }

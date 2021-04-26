@@ -1,3 +1,4 @@
 rootProject.name='ImageDeflated'
 include ':app'
 include ':plugin'
+include ':module'
