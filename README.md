@@ -68,7 +68,7 @@ imageDeflated {
 
 # 待做功能
 - 处理 assert 目录下的 图片资源 （flutter 的图片资源会 打包到这里）
-- 
+- 自动区分那些图片 不适合转为 webp（或者控制转为webp的质量？？）
 
 
 
