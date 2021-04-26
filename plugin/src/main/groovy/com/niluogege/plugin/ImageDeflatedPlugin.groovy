@@ -1,5 +1,6 @@
 package com.niluogege.plugin
 
+import com.android.build.gradle.api.BaseVariant
 import com.android.build.gradle.tasks.MergeResources
 import com.android.ide.common.resources.ResourcePreprocessor
 import com.android.ide.common.resources.ResourceSet
@@ -42,10 +43,6 @@ class ImageDeflatedPlugin implements Plugin<Project> {
                 stickmergeResourcesTask(project, variant)
             }
 
-            android.buildTypes.all { buildType ->
-                stickmergeResourcesTask(project, buildType)
-            }
-
             extension2Config(imageDeflated)
 
         }
@@ -77,7 +74,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
     }
 
 
-    private static void stickmergeResourcesTask(Project project, variant) {
+    private static void stickmergeResourcesTask(Project project, BaseVariant variant) {
         MergeResources mergeResourcesTask = variant.mergeResourcesProvider.get()
         hookMergeResourcesTask(mergeResourcesTask)
     }
