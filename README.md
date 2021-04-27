@@ -1,14 +1,29 @@
+## 目前用在享耀云商 这个项目中有问题，只有一点点 图片 转了 webp,fuck 得看看
+
 # ImageDeflated
 android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 
 # 注意
-目前只测试了 gradle 插件版本为 3.6.3 的情况，其他版本不保证能成功运行
+- 目前只测试了 gradle 插件版本为 3.6.3 的情况，其他版本不保证能成功运行
+- gradle.propertiy 中 不能配置
+```
+org.gradle.parallel=true
+org.gradle.daemon=false
+org.gradle.caching=true
+org.gradle.configureondemand=true
+```
 
 # 功能点记录
 - 先试用 tiny 压缩再 转webp 可以更大限度的 减少图片体积
 - 三方依赖的图片资源会一并处理
 - 忽略.9 文件
 - 动态依赖 来优雅的处理 cwebp.exe 这个依赖
+- whiteList 支持 通配符 `? + *`
+```
+?	Zero or one character
+*	Zero or more of character
++	One or more of character
+```
 
 # 使用
 1. 根目录下build.gradle 中添加依赖
@@ -69,6 +84,8 @@ imageDeflated {
 # 待做功能
 - 处理 assert 目录下的 图片资源 （flutter 的图片资源会 打包到这里）
 - 自动区分那些图片 不适合转为 webp（或者控制转为webp的质量？？）
+- 无须tiny key ，无限量 tiny
+- 目前 无法处理 aar 中的图片，看有没有什么方案可以做
 
 
 
@@ -171,3 +188,7 @@ E:\111work\code\code_me\myGitHub\ImageDeflated\app\build\generated\res\resValues
 原因是Webp并不支持灰度图带上透明通道这种类型，带上透明通道就将格式固定成了RGBA格式。因此导致了要保存的数据变大。
 参考：https://developer.aliyun.com/article/74634
 目前的解决方案是将这类图片 添加到 白名单中即可。
+
+
+## 参考
+- [TinyPngPlugin](https://github.com/Deemonser/TinyPngPlugin)

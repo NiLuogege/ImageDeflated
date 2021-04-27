@@ -9,13 +9,13 @@ import com.niluogege.plugin.bean.WebpConfig
 import com.niluogege.plugin.extension.ImageDeflatedExtension
 import com.niluogege.plugin.extension.TinyExtension
 import com.niluogege.plugin.extension.WebpExtension
-import com.niluogege.plugin.task.ImageDeflatedTask
 import com.niluogege.plugin.utils.MD5Utils
 import com.niluogege.plugin.utils.ReflectUtil
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 
@@ -87,7 +87,8 @@ class ImageDeflatedPlugin implements Plugin<Project> {
 
             List<ResourceSet> resourceSets = getResourceSets(mergeResourcesTask)
 
-            List<File> waitDeflateDirs = changeSourceFile(resourceSets)
+            List<File> waitDeflateDirs = getWaitDeflateDirs(resourceSets)
+            println("getWaitDeflateDirs 后= ${resourceSets.toString()}")
 
             Deflateder.deflate(waitDeflateDirs, getCacheDirRoot().getAbsolutePath(), tinyConfig, webpConfig)
         }
@@ -107,26 +108,37 @@ class ImageDeflatedPlugin implements Plugin<Project> {
         return resourceSets
     }
 
-    private static List<File> changeSourceFile(List<ResourceSet> resourceSets) {
+    private static void setResourceSets(MergeResources mergeResourcesTask, List<ResourceSet> resourceSets) {
+        Class clazz = mergeResourcesTask.getClass()
+        Field processedInputs = ReflectUtil.getDeclaredFieldRecursive(clazz, "processedInputs")
+        processedInputs.set(mergeResourcesTask, resourceSets)
+    }
+
+    private static List<File> getWaitDeflateDirs(List<ResourceSet> resourceSets) {
         List<File> waitDeflateDirs = new ArrayList<>();
-        System.out.println("替换前 resourceSet = " + resourceSets.toString())
 
         //将 resourceSets 中的res 文件路径 替换为 我们自己的
         for (ResourceSet resourceSet : resourceSets) {
+
             List<File> sourceFiles = resourceSet.getSourceFiles()
-            List<File> newSourceFiles = new ArrayList<>();
-            for (File file : sourceFiles) {
-                if (file.exists()) {
-                    File resCacheDir = getCacheDir(resourceSet, file)
-                    newSourceFiles.add(resCacheDir)
-                    FileUtils.copyDirectory(file, resCacheDir)
+            if (isModule(sourceFiles)) {//是module 直接 转
+                waitDeflateDirs.addAll(sourceFiles)
+            } else if (isAppModule(resourceSet.configName)) { //是主项目 copy 到缓存目录 再转
+                List<File> newSourceFiles = new ArrayList<>();
+                for (File file : sourceFiles) {
+                    if (file.exists()) {
+                        File resCacheDir = getCacheDir(resourceSet, file)
+                        newSourceFiles.add(resCacheDir)
+                        FileUtils.copyDirectory(file, resCacheDir)
+                    }
                 }
+                sourceFiles.clear()
+                sourceFiles.addAll(newSourceFiles)
+                waitDeflateDirs.addAll(newSourceFiles)
+            } else { //aar 项目先不做处理
+
             }
-            sourceFiles.clear()
-            sourceFiles.addAll(newSourceFiles)
-            waitDeflateDirs.addAll(newSourceFiles)
         }
-        System.out.println("替换后 resourceSet = " + resourceSets.toString())
         return waitDeflateDirs
     }
 
@@ -163,5 +175,22 @@ class ImageDeflatedPlugin implements Plugin<Project> {
         if (cacheDirRoot.exists()) {
             FileUtils.deleteDirectory(cacheDirRoot)
         }
+    }
+
+    //主项目的 configName 是 main 或者  main$Generated
+    //是否是主项目
+    private static boolean isAppModule(String configName) {
+        return configName.contains("main")
+    }
+
+
+    ////module 的 ResourceSet 中只有一条路径 并且都在  ...build\intermediates\packaged_res... 下
+    //是否是 module 依赖
+    private static boolean isModule(List<File> sourceFiles) {
+        String resourceSetSourcesPath = sourceFiles.first()
+        boolean isModule = resourceSetSourcesPath.contains("intermediates\\packaged_res")
+        println("isModule=$isModule resourceSetSourcesPath=$resourceSetSourcesPath")
+        return isModule
+
     }
 }
