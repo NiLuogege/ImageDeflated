@@ -32,7 +32,7 @@ buildscript {
         ...
     }
     dependencies {
-        classpath 'com.github.NiLuogege:ImageDeflated:1.0.0'
+        classpath 'com.github.NiLuogege:ImageDeflated:1.0.1'
         ...
     }
 }

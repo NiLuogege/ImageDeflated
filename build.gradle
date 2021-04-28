@@ -20,7 +20,7 @@ buildscript {
         //jitpack
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
 
-//        classpath 'com.github.NiLuogege:ImageDeflated:1.0.0'
+        classpath 'com.github.NiLuogege:ImageDeflated:1.0.1'
 
         //本地仓库 用于调试
 //        classpath 'com.niluogege.imageDeflated:plugin:1.0.91'
