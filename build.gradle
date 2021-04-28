@@ -5,9 +5,9 @@ buildscript {
     repositories {
 
         //本地仓库 用于调试
-        maven {
-            url uri('E:\\111work\\code\\code_me\\myGitHub\\ImageDeflated\\repo')
-        }
+//        maven {
+//            url uri('E:\\111work\\code\\code_me\\myGitHub\\ImageDeflated\\repo')
+//        }
         maven { url 'https://jitpack.io' }
         google()
         jcenter()
@@ -23,7 +23,7 @@ buildscript {
 //        classpath 'com.github.NiLuogege:ImageDeflated:1.0.0'
 
         //本地仓库 用于调试
-        classpath 'com.niluogege.imageDeflated:plugin:1.0.91'
+//        classpath 'com.niluogege.imageDeflated:plugin:1.0.91'
     }
 }
 
