@@ -88,7 +88,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
             List<ResourceSet> resourceSets = getResourceSets(mergeResourcesTask)
 
             List<File> waitDeflateDirs = getWaitDeflateDirs(resourceSets)
-            println("getWaitDeflateDirs 后= ${resourceSets.toString()}")
+            println("替换 resourceSets 后= ${resourceSets.toString()}")
 
             Deflateder.deflate(waitDeflateDirs, getCacheDirRoot().getAbsolutePath(), tinyConfig, webpConfig)
         }
@@ -115,7 +115,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
     }
 
     private static List<File> getWaitDeflateDirs(List<ResourceSet> resourceSets) {
-        List<File> waitDeflateDirs = new ArrayList<>();
+        HashSet<File> waitDeflateDirs = new HashSet<>()
 
         //将 resourceSets 中的res 文件路径 替换为 我们自己的
         for (ResourceSet resourceSet : resourceSets) {
@@ -139,7 +139,7 @@ class ImageDeflatedPlugin implements Plugin<Project> {
 
             }
         }
-        return waitDeflateDirs
+        return  new ArrayList<File>(waitDeflateDirs)
     }
 
     private static File getCacheDir(ResourceSet resourceSet, File file) {

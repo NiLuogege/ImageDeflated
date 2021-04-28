@@ -14,9 +14,9 @@ org.gradle.configureondemand=true
 ```
 
 # 功能点记录
-- 先试用 tiny 压缩再 转webp 可以更大限度的 减少图片体积
-- 三方依赖的图片资源会一并处理
+- 用 tiny 压缩再 转webp 可以更大限度的 减少图片体积
 - 忽略.9 文件
+- 默认 图片超过 10kb 进行 tiny压缩，超过1kb 转webp,所以会发现 APk 里并不是所有都是 webp格式
 - 动态依赖 来优雅的处理 cwebp.exe 这个依赖
 - whiteList 支持 通配符 `? + *`
 ```

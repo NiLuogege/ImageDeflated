@@ -30,6 +30,9 @@ public class Deflateder {
                 for (File waitDeflateDir : waitDeflateDirs) {
 
                     for (File file : FileUtils.listFilesAndDirs(waitDeflateDir, FileFileFilter.FILE, targetDirFilter)) {
+
+                        System.out.println("deflate  file= " + file);
+
                         if (!file.isDirectory()) {
                             long startFileLength = file.length();
 
