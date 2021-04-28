@@ -8,9 +8,7 @@ android 图片 瘦身 插件，支持 图片压缩，并自动转为 webp
 - gradle.propertiy 中 不能配置
 ```
 org.gradle.parallel=true
-org.gradle.daemon=false
 org.gradle.caching=true
-org.gradle.configureondemand=true
 ```
 
 # 功能点记录
@@ -86,6 +84,7 @@ imageDeflated {
 - 自动区分那些图片 不适合转为 webp（或者控制转为webp的质量？？）
 - 无须tiny key ，无限量 tiny
 - 目前 无法处理 aar 中的图片，看有没有什么方案可以做
+- 
 
 
 
